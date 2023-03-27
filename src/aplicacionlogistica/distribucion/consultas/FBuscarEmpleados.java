@@ -1,0 +1,397 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package aplicacionlogistica.distribucion.consultas;
+
+import aplicacionlogistica.distribucion.Threads.PerformanceInfiniteProgressPanel;
+import aplicacionlogistica.configuracion.Inicio;
+import aplicacionlogistica.distribucion.formularios.FManifestarPedidosEnRuta;
+import aplicacionlogistica.distribucion.formularios.administracion.IngresarDocumentosEmpleados;
+import aplicacionlogistica.distribucion.formularios.administracion.IngresarEmpleados;
+import aplicacionlogistica.distribucion.formularios.administracion.IngresarUsuarios;
+import aplicacionlogistica.distribucion.administracion.TalentoHUmano.CCargos;
+import aplicacionlogistica.distribucion.formularios.administracion.HiloIngresarEmpleados;
+import aplicacionlogistica.distribucion.formularios.administracion.HiloIngresarUsuarios;
+import aplicacionlogistica.distribucion.objetos.personas.CEmpleados;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author Usuario
+ */
+public class FBuscarEmpleados extends javax.swing.JInternalFrame {
+
+    Object[] fila = new Object[3];
+    DefaultTableModel modelo;
+    String cedula = null;
+    private IngresarEmpleados IngresarEmpleados = null;
+    private IngresarUsuarios fIngresarUsuarios = null;
+    IngresarDocumentosEmpleados fIngresarDocumentosEmpleados = null;
+    private PerformanceInfiniteProgressPanel panel;
+    String usuario;
+    Inicio ini;
+
+    /**
+     * Creates new form FBuscar2
+     */
+    public FBuscarEmpleados() {
+        initComponents();
+        txtApellidosPersona.requestFocus();
+    }
+
+    public FBuscarEmpleados(Inicio ini) {
+        initComponents();
+        this.ini = ini;
+        panel = new PerformanceInfiniteProgressPanel(true);
+        this.add(panel);
+        panel.setVisible(false);
+        this.setResizable(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
+        txtApellidosPersona.requestFocus();
+    }
+
+    public FBuscarEmpleados(Inicio ini, FManifestarPedidosEnRuta manifiesto) {
+        initComponents();
+        this.ini = ini;
+
+        panel = new PerformanceInfiniteProgressPanel(true);
+        this.add(panel);
+        panel.setVisible(false);
+        //residente = (FResidentes)this.getParent();
+        this.setResizable(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
+        txtApellidosPersona.requestFocus();
+    }
+
+    public FBuscarEmpleados(IngresarEmpleados empleado) {
+        initComponents();
+        this.ini = empleado.ini;
+        this.IngresarEmpleados = empleado;
+        panel = new PerformanceInfiniteProgressPanel(true);
+        this.add(panel);
+        panel.setVisible(false);
+        //residente = (FResidentes)this.getParent();
+        this.setResizable(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
+        txtApellidosPersona.requestFocus();
+    }
+
+    public FBuscarEmpleados(IngresarDocumentosEmpleados ingDocumentos) {
+        initComponents();
+        this.fIngresarDocumentosEmpleados = ingDocumentos;
+        panel = new PerformanceInfiniteProgressPanel(true);
+        this.add(panel);
+        panel.setVisible(false);
+        //residente = (FResidentes)this.getParent();
+        this.setResizable(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
+        txtApellidosPersona.requestFocus();
+    }
+
+    public FBuscarEmpleados(IngresarUsuarios empleado) {
+        initComponents();
+        this.fIngresarUsuarios = empleado;
+        this.ini = empleado.ini;
+        panel = new PerformanceInfiniteProgressPanel(true);
+        this.add(panel);
+        panel.setVisible(false);
+        //residente = (FResidentes)this.getParent();
+        this.setResizable(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation((screenSize.width - this.getSize().width) / 2, (screenSize.height - this.getSize().height) / 2);
+        txtApellidosPersona.requestFocus();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        txtApellidosPersona = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        btnAceptar = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
+
+        jTextField1.setEditable(false);
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("Para consultar por Apellidos colocar el primer apellido y/o parte del segundo apellido");
+        jTextField1.setEnabled(false);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Apelllidos");
+
+        txtApellidosPersona.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtApellidosPersonaFocusGained(evt);
+            }
+        });
+        txtApellidosPersona.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtApellidosPersonaKeyPressed(evt);
+            }
+        });
+
+        jButton3.setText("Limpiar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "DOCUMENTO N°", "NOMBRES", "APELLIDOS"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(100);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(200);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(200);
+        }
+
+        btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/clean.png"))); // NOI18N
+        btnAceptar.setText("Aceptar");
+        btnAceptar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAceptar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
+
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/exit.png"))); // NOI18N
+        btnSalir.setText("Salir");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(348, 348, 348)
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtApellidosPersona)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)))
+                .addGap(0, 0, 0))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(txtApellidosPersona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAceptar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+
+        int row = jTable1.getSelectedRow();
+        this.cedula = (String.valueOf(jTable1.getValueAt(row, 0)));
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        txtApellidosPersona.setEnabled(true);
+        modelo = (DefaultTableModel) jTable1.getModel();
+        if (modelo.getRowCount() > 0) {
+            int a = modelo.getRowCount() - 1;
+            for (int i = a; i >= 0; i--) {
+                modelo.removeRow(i);
+            }
+        }
+        txtApellidosPersona.requestFocus();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        try {
+            if (cedula != null) {
+
+                if (IngresarEmpleados != null) {
+                    this.IngresarEmpleados.txtCedula.setText(cedula);
+                     new Thread(new HiloIngresarEmpleados(ini, this.IngresarEmpleados, "consultarEmpleado")).start();
+                    this.dispose();
+
+                }
+
+                if (fIngresarUsuarios != null) {
+                   // CUsuarios e1 = new CUsuarios(ini, cedula);
+                    this.fIngresarUsuarios.txtCedula.setText(cedula);
+                  //this.fIngresarUsuarios.llenarCamposDe();
+                     new Thread(new HiloIngresarUsuarios(ini, this.fIngresarUsuarios, "consultarUsuario")).start();
+                    this.dispose();
+                }
+                
+                if (fIngresarDocumentosEmpleados != null) {
+                    CEmpleados e2 = new CEmpleados(ini, cedula);
+                    this.fIngresarDocumentosEmpleados.txtCedula.setText(cedula);
+                    this.fIngresarDocumentosEmpleados.llenarCamposDeTexto(e2);
+                    this.fIngresarDocumentosEmpleados.setEmpleado(e2);
+                    CCargos cargo = new CCargos(ini, e2.getCargo());
+                    this.fIngresarDocumentosEmpleados.txtCargo.setText(cargo.getNombreCargo());
+                    this.fIngresarDocumentosEmpleados.llenarDatos();
+                    this.fIngresarDocumentosEmpleados.jTabbedPane1.setEnabled(true);
+                    this.dispose();
+                }
+   
+
+            } else {
+                JOptionPane.showInternalMessageDialog(this, "No ha elegido un empleado de la lista", "Error ", 0);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(FBuscarEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void txtApellidosPersonaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosPersonaKeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+            txtApellidosPersona.setEnabled(false);
+
+            try {
+                CEmpleados empl = new CEmpleados(ini);
+
+                for (CEmpleados obj : ini.getListaDeEmpleados()) {
+                    String nombres= obj.getNombres() + " " + obj.getApellidos();
+                    if(nombres.contains(txtApellidosPersona.getText().trim())){
+                       fila = new Object[3];
+                    fila[0] = obj.getCedula();
+                    fila[1] = obj.getNombres();
+                    fila[2] = obj.getApellidos();
+                    modelo = (DefaultTableModel) jTable1.getModel();
+                    modelo.addRow(fila);  
+                    }
+                   
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(FBuscarEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(FBuscarEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_txtApellidosPersonaKeyPressed
+
+    private void txtApellidosPersonaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtApellidosPersonaFocusGained
+        txtApellidosPersona.setSelectionStart(0);
+        txtApellidosPersona.setSelectionEnd(txtApellidosPersona.getText().length());
+    }//GEN-LAST:event_txtApellidosPersonaFocusGained
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    public javax.swing.JTextField txtApellidosPersona;
+    // End of variables declaration//GEN-END:variables
+}

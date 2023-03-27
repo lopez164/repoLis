@@ -1,0 +1,47 @@
+6
+807.003.072-1
+COMERCIALIZADORA CAMDUN S.A.S.
+Av  4A # 7N-54 Zona Industrial
+ZONA INDUSTRIAL
+CUCUTA 
+RICARDO GONZALEZ
+ric3426@gmail.com
+5782288
+3133096439
+comercializadoraCamdun
+jdbc:mysql
+50.0.0.114
+3306
+luislopez 
+jslslpzmjc1212 
+comercializadoraCamdun
+jdbc:mysql
+186.116.177.242
+3306
+luislopez
+jslslpzmjc1212
+
+------
+
+q3SMeouSUM6tBWypaNs06Q
+OUgu3L2tNkuBtzIBK2OuiA
+9pUMcFH7FYr1xUgBsUFm7f8QA20K72LPbgJqAMDZ4zg
+P2QrAFUKTcbFiM4pkXCXGgas626n0b5HZaZzprOkroI
+VJXuGmy2Fbc4cLUezcvj0w
+h5B4LDh8G8VZLw8Xs73Bkg 
+29qjd3Cra4BjNi1Xp6l5nPk4dTbAJmxDlWjvulF1qjI
+W1UOziBa2wEDA8MzluxKCOOMsWtH8T6s1zxUqS5hBPg
+0AuvDv-UXkthw_qPxU3vqA
+6zlzs3aA6Cf3qPwBHfIApg
+GnOCAFs1Rh-VAFXOefQ_gkjGHaE9OU9rEA4G_WfP7ZA
+I9rrtexv6pD7iEwFwGdRpQ
+DGVJ1ZQrzlMC4HJb94_gaA
+hAegtBk-F9SbWKf328X9aw
+DqZXlmW2hyz_zWNFyZLIkw
+hgCEGfUMxU4Im3DsQISTfA
+GnOCAFs1Rh-VAFXOefQ_gkjGHaE9OU9rEA4G_WfP7ZA
+I9rrtexv6pD7iEwFwGdRpQ
+5hkEvt5s_cn3pGrF1U8Xtw
+hAegtBk-F9SbWKf328X9aw
+DqZXlmW2hyz_zWNFyZLIkw
+hgCEGfUMxU4Im3DsQISTfA

@@ -1,0 +1,754 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package aplicacionlogistica.distribucion.formularios.Hielera.consultas;
+
+import aplicacionlogistica.distribucion.consultas.FBuscarVehiculo;
+import aplicacionlogistica.configuracion.Inicio;
+import aplicacionlogistica.administrativo.PrincipalAdministrador;
+import aplicacionlogistica.distribucion.objetos.CProductos;
+import aplicacionlogistica.distribucion.objetos.personas.CUsuarios;
+import mtto.vehiculos.CCarros;
+import java.awt.HeadlessException;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author VLI_488
+ */
+public class FConsultarProducto extends javax.swing.JInternalFrame {
+
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+
+    public boolean actualizar = false;
+    boolean nuevo = false;
+    boolean tieneFoto = false;
+    public boolean actualizarFoto = false;
+    public boolean estaOcupadoGrabando = false;
+    String mensaje = null;
+    ImageIcon foto = null;
+    public Inicio ini;
+    String suario;
+
+    public CCarros carro;
+
+    CUsuarios user;
+//    CMarcasDeVehiculos mv;
+//    CLineasPorMarca lxm;
+//    CTiposDeVehiculos tv;
+//    CTiposDeCarrocerias tcr;
+//    CTiposDeServicio ts;
+//    CTiposDeCombustibles tcb;
+//    CAgencias ag;
+    String extension = null;
+    File fileFoto = null;
+
+    /**
+     * Creates new form IngresarPersonas
+     *
+     * @param ini objeto de configuración del sistema
+     */
+    public FConsultarProducto(Inicio ini) {
+        try {
+            initComponents();
+            this.ini = ini;
+            user = ini.getUser();
+            lblCirculoDeProgreso1.setVisible(false);
+
+            foto = new ImageIcon("/aplicacionlogistica/configuracion/imagenes/perfil.jpg");
+            //  JScrollPane jscp = new JScrollPane(this);
+            manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+                @Override
+                public boolean dispatchKeyEvent(KeyEvent e) {
+                    //como dije, solo las notificaciones del tipo "typed" son las que actualizan los componentes
+                    if (e.getID() == KeyEvent.KEY_TYPED) {
+                        // if(e.getSource() instanceof JComponent
+                        //if(e.getKeyChar()>='0' && e.getKeyChar()<='9' ){
+                        if (e.getSource() instanceof JComponent
+                                // si el textfield esta marcado en el nombre y si el nombre es igual a "ignore_upper_case"
+                                // entonces el campo puede tomar las minusculas
+                                && ((JComponent) e.getSource()).getName() != null
+                                && ((JComponent) e.getSource()).getName().startsWith("numerico")) {
+
+                            if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9') {
+                                return false;
+                            } else {
+                                return true;
+                            }
+
+                        } else {
+                            if (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z') {
+                                if (e.getSource() instanceof JComponent
+                                        // si el textfield esta marcado en el nombre y si el nombre es igual a "ignore_upper_case"
+                                        // entonces el campo puede tomar las minusculas
+                                        && ((JComponent) e.getSource()).getName() != null
+                                        && ((JComponent) e.getSource()).getName().startsWith("minuscula")) {
+                                    return false;
+                                } else {
+                                    //como vamos a convertir todo a mayúsculas, entonces solo checamos si los caracteres son
+                                    //minusculas
+                                    e.setKeyChar((char) (((int) e.getKeyChar()) - 32));
+                                }
+                            }
+                        }
+                    }
+
+                    //y listo, regresamos siempre falso para que las demas notificaciones continuen, si regresamos true
+                    // significa que el dispatcher consumio el evento
+                    return false;
+                }
+            });
+
+// new Thread(new HiloIngresarCarros(this.ini, this, "cargarLaVista")).start();
+        } catch (Exception ex) {
+            Logger.getLogger(FConsultarProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pumImagen = new javax.swing.JPopupMenu();
+        agregarImagen = new javax.swing.JMenu();
+        jToolBar1 = new javax.swing.JToolBar();
+        jBtnNuevo = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jBtnCancel = new javax.swing.JToggleButton();
+        jBtnExit = new javax.swing.JToggleButton();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        btnSalir = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
+        btnGrabar = new javax.swing.JButton();
+        txtCodigoEscaneado = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtLinea = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        lblCirculoDeProgreso1 = new javax.swing.JLabel();
+        txtCodigoProducto = new javax.swing.JTextField();
+        txtDescripcion = new javax.swing.JTextField();
+        txtCodigoDeBarras = new javax.swing.JTextField();
+
+        agregarImagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/People.png"))); // NOI18N
+        agregarImagen.setText("Agregar Imagen del vehículo");
+        agregarImagen.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                agregarImagenMouseClicked(evt);
+            }
+        });
+        pumImagen.add(agregarImagen);
+
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Formulario para Consulta de codigo de  Producto");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/turbo_64x64.png"))); // NOI18N
+
+        jToolBar1.setRollover(true);
+
+        jBtnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Create.png"))); // NOI18N
+        jBtnNuevo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnNuevo.setFocusable(false);
+        jBtnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnNuevoActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnNuevo);
+
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Save.png"))); // NOI18N
+        jToggleButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jToggleButton1.setEnabled(false);
+        jToggleButton1.setFocusable(false);
+        jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jToggleButton1);
+
+        jBtnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Cancel.png"))); // NOI18N
+        jBtnCancel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnCancel.setFocusable(false);
+        jBtnCancel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnCancel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnCancelActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnCancel);
+
+        jBtnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Exit.png"))); // NOI18N
+        jBtnExit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnExit.setFocusable(false);
+        jBtnExit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnExit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnExitActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnExit);
+
+        jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/exit.png"))); // NOI18N
+        btnSalir.setText("Salir");
+        btnSalir.setToolTipText("Salir de ingresar Vehículos");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/cancel-64x64.png"))); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.setToolTipText("Limpia la ventana para ingreasr registro...");
+        btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelar.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/agregar.png"))); // NOI18N
+        btnNuevo.setText("Nuevo");
+        btnNuevo.setToolTipText("Agregar ó Modificar un registro");
+        btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNuevo.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnNuevo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        btnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+
+        btnGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/grabar.png"))); // NOI18N
+        btnGrabar.setText("Grabar");
+        btnGrabar.setToolTipText("Guardar registro nuevo ó modificado");
+        btnGrabar.setEnabled(false);
+        btnGrabar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGrabar.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnGrabar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGrabar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGrabarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGrabar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+            .addComponent(btnGrabar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        );
+
+        txtCodigoEscaneado.setEditable(false);
+        txtCodigoEscaneado.setToolTipText("Ingresar placa del Vehículo");
+        txtCodigoEscaneado.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCodigoEscaneadoFocusGained(evt);
+            }
+        });
+        txtCodigoEscaneado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoEscaneadoActionPerformed(evt);
+            }
+        });
+        txtCodigoEscaneado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoEscaneadoKeyPressed(evt);
+            }
+        });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Codigo");
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Codigo del Producto");
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Descripcion");
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("Linea");
+
+        txtLinea.setEditable(false);
+        txtLinea.setToolTipText("Ingresar el modelo del vehículo");
+        txtLinea.setName("numerico"); // NOI18N
+        txtLinea.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtLineaFocusGained(evt);
+            }
+        });
+        txtLinea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtLineaKeyPressed(evt);
+            }
+        });
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("Codigo de BArras");
+
+        lblCirculoDeProgreso1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/circuloDeprogreso.gif"))); // NOI18N
+
+        txtCodigoProducto.setEditable(false);
+        txtCodigoProducto.setToolTipText("Ingresar el modelo del vehículo");
+        txtCodigoProducto.setName("numerico"); // NOI18N
+        txtCodigoProducto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCodigoProductoFocusGained(evt);
+            }
+        });
+        txtCodigoProducto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoProductoKeyPressed(evt);
+            }
+        });
+
+        txtDescripcion.setEditable(false);
+        txtDescripcion.setToolTipText("Ingresar el modelo del vehículo");
+        txtDescripcion.setName("numerico"); // NOI18N
+        txtDescripcion.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDescripcionFocusGained(evt);
+            }
+        });
+        txtDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDescripcionKeyPressed(evt);
+            }
+        });
+
+        txtCodigoDeBarras.setEditable(false);
+        txtCodigoDeBarras.setToolTipText("Ingresar el modelo del vehículo");
+        txtCodigoDeBarras.setName("numerico"); // NOI18N
+        txtCodigoDeBarras.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCodigoDeBarrasFocusGained(evt);
+            }
+        });
+        txtCodigoDeBarras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoDeBarrasActionPerformed(evt);
+            }
+        });
+        txtCodigoDeBarras.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCodigoDeBarrasKeyPressed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(txtCodigoEscaneado, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(lblCirculoDeProgreso1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtLinea, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCodigoDeBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtCodigoEscaneado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(lblCirculoDeProgreso1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtLinea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtCodigoDeBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        salir();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void salir() {
+        this.dispose();
+        this.setVisible(false);
+    }
+
+    private void txtCodigoEscaneadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoEscaneadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoEscaneadoActionPerformed
+
+    private void txtLineaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLineaKeyPressed
+    }//GEN-LAST:event_txtLineaKeyPressed
+
+    private void txtCodigoEscaneadoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoEscaneadoKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try {
+                //consultarCarro();
+                String cadena;
+                CProductos producto = new CProductos(ini);
+                cadena = producto.validarProducto(txtCodigoEscaneado.getText().trim());
+                txtCodigoProducto.setText("");
+                txtDescripcion.setText("");
+                txtLinea.setText("");
+                txtCodigoDeBarras.setText("");
+                
+                if (cadena != null) {
+                    String[] propiedad = cadena.split("#");
+
+                    /* + rstTNS.getString("codigoProducto") + "#"
+                        + rstTNS.getString("descripcionProducto") + "#"
+                        + rstTNS.getString("linea") + "#"
+                        + rstTNS.getString("valorUnitario") + "#"
+                        + rstTNS.getString("valorUnitarioConIva") + "#"
+                        + rstTNS.getString("isFree") + "#"
+                        + rstTNS.getString("pesoProducto") + "#"
+                        + rstTNS.getString("largoProducto") + "#"
+                        + rstTNS.getString("anchoProducto") + "#"
+                        + rstTNS.getString("altoProducto") + "#"
+                        + rstTNS.getString("activo") + "#"
+                        + "CURRENT_TIMESTAMP()" + "#"
+                        + rstTNS.getString("usuario") + "#"
+                        + rstTNS.getString("flag") + "#"
+                        + rstTNS.getString("barcode2") + ""; */
+                    producto.setCodigoProducto(propiedad[0]);
+                    txtCodigoProducto.setText(propiedad[0]);
+
+                    producto.setDescripcionProducto(propiedad[1]);
+                    txtDescripcion.setText(propiedad[1]);
+
+                    producto.setLinea(propiedad[2]);
+                    txtLinea.setText(propiedad[2]);
+
+                    if(propiedad[14].equals("null")){
+                      txtCodigoDeBarras.setText("Sin codigo de Barras"); 
+                    }else{
+                       producto.setCodigoDeBarras(propiedad[14]);
+                    txtCodigoDeBarras.setText(propiedad[14]); 
+                    }
+                    
+
+                    txtCodigoProducto.requestFocus();
+                    txtCodigoEscaneado.requestFocus();
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Producto no existe en el sistema", "Alerta", 1);
+
+                }
+
+                // new Thread(new HiloIngresarCarros(ini, this, "consultarCarro")).start();
+            } catch (Exception ex) {
+                Logger.getLogger(FConsultarProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_txtCodigoEscaneadoKeyPressed
+
+    private void txtCodigoEscaneadoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoEscaneadoFocusGained
+        txtCodigoEscaneado.setSelectionStart(0);
+        txtCodigoEscaneado.setSelectionEnd(txtCodigoEscaneado.getText().length());
+    }//GEN-LAST:event_txtCodigoEscaneadoFocusGained
+
+    private void txtLineaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtLineaFocusGained
+        txtLinea.setSelectionStart(0);
+        txtLinea.setSelectionEnd(txtLinea.getText().length());
+    }//GEN-LAST:event_txtLineaFocusGained
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void nuevo() {
+        if (actualizar) {
+            actualizarFoto = true;
+            btnNuevo.setEnabled(false);
+            habilitar(true);
+            txtCodigoEscaneado.setEditable(false);
+            nuevo = false;
+            btnGrabar.setEnabled(true);
+
+        } else {
+            nuevo = true;
+            limpiar();
+            actualizarFoto = true;
+            txtCodigoEscaneado.setEditable(true);
+
+        }
+        // btnGrabar.setEnabled(false);
+        txtCodigoEscaneado.requestFocus();
+    }
+
+    private void agregarImagenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_agregarImagenMouseClicked
+
+    }//GEN-LAST:event_agregarImagenMouseClicked
+
+    private void btnGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarActionPerformed
+        grabar();
+
+
+    }//GEN-LAST:event_btnGrabarActionPerformed
+
+    private void grabar() throws HeadlessException {
+        if (!txtCodigoEscaneado.getText().isEmpty()) {
+            int x = JOptionPane.showConfirmDialog(this, "Desea guardar el registro ?", "Guardar registro", 0);
+            if (x == 0) {
+
+            }
+        } else {
+            JOptionPane.showInternalMessageDialog(this, "No se pueden Guardar Datos con campos vacíos", "Error al guardar", 2);
+        }
+    }
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void cancelar() {
+        limpiar();
+        nuevo = false;
+        actualizar = false;
+        habilitar(false);
+        btnNuevo.setEnabled(true);
+        btnGrabar.setEnabled(false);
+    }
+
+    private void jBtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jBtnNuevoActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        grabar();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jBtnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCancelActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jBtnCancelActionPerformed
+
+    private void jBtnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnExitActionPerformed
+        salir();
+    }//GEN-LAST:event_jBtnExitActionPerformed
+
+    private void txtCodigoProductoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoProductoFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoProductoFocusGained
+
+    private void txtCodigoProductoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoProductoKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoProductoKeyPressed
+
+    private void txtDescripcionFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDescripcionFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescripcionFocusGained
+
+    private void txtDescripcionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescripcionKeyPressed
+
+    private void txtCodigoDeBarrasFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCodigoDeBarrasFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoDeBarrasFocusGained
+
+    private void txtCodigoDeBarrasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoDeBarrasKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoDeBarrasKeyPressed
+
+    private void txtCodigoDeBarrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoDeBarrasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoDeBarrasActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu agregarImagen;
+    private javax.swing.JButton btnCancelar;
+    public javax.swing.JButton btnGrabar;
+    public javax.swing.JButton btnNuevo;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JToggleButton jBtnCancel;
+    private javax.swing.JToggleButton jBtnExit;
+    private javax.swing.JButton jBtnNuevo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToolBar jToolBar1;
+    public javax.swing.JLabel lblCirculoDeProgreso1;
+    private javax.swing.JPopupMenu pumImagen;
+    public javax.swing.JTextField txtCodigoDeBarras;
+    public javax.swing.JTextField txtCodigoEscaneado;
+    public javax.swing.JTextField txtCodigoProducto;
+    public javax.swing.JTextField txtDescripcion;
+    public javax.swing.JTextField txtLinea;
+    // End of variables declaration//GEN-END:variables
+
+    public void llenarCamposDeTexto() {
+
+    }
+
+    public void habilitar(boolean valor) {
+
+        try {
+            txtCodigoEscaneado.setEditable(valor);
+            txtLinea.setEditable(valor);
+            txtLinea.setEditable(valor);
+
+        } catch (Exception ex) {
+        }
+
+    }
+
+    public boolean validar() {
+        boolean verificado = true;
+        mensaje = "";
+
+        return verificado;
+    }
+
+    public boolean guardarRegistroVehiculoCarro() {
+        boolean guardado = false;
+        try {
+
+            // guardado = carro.grabarCarros();
+        } catch (Exception ex) {
+            Logger.getLogger(FConsultarProducto.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+        return guardado;
+    }
+
+    private void limpiar() {
+
+        try {
+            txtCodigoEscaneado.setText("");
+            txtLinea.setText("");
+            txtLinea.setText("");
+
+            btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/agregar.png"))); //
+            btnNuevo.setText("Nuevo");
+            btnNuevo.setEnabled(true);
+            actualizarFoto = false;
+            actualizar = false;
+            tieneFoto = false;
+        } catch (Exception ex) {
+        }
+
+    }
+
+}

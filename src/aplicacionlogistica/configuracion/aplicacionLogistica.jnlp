@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://www.logarea.net/aplicacionlogistica" href="aplicacionLogistica.jnlp">
+    <information>
+        <title>Aplicación de Logistica</title>
+        <vendor>Log.Area SAS</vendor>
+        <homepage href="http://www.logarea.net/aplicacionlogistica"/>
+        <description kind="short">aplicacionLogistica</description>
+        <icon href="turbo_64x64.png" kind="default" />
+        <offline-allowed/>
+    </information>
+    <security>
+            <all-permissions/>
+    </security>
+    <resources>
+            <j2se version="1.7+"/>
+            <jar href="aplicacionlogistica.jar" main="true"/>
+            <jar href="lib/DateChooser.jar"/>
+            <jar href="lib/apache-logging-log4j.jar"/>
+            <jar href="lib/commons-codec-1.7-javadoc.jar"/>
+            <jar href="lib/commons-codec-1.7-sources.jar"/>
+            <jar href="lib/commons-codec-1.7-test-sources.jar"/>
+            <jar href="lib/commons-codec-1.7-tests.jar"/>
+            <jar href="lib/commons-codec-1.7.jar"/>
+            <jar href="lib/commons-net-3.2-sources.jar"/>
+            <jar href="lib/commons-net-3.2.jar"/>
+            <jar href="lib/commons-net-examples-3.2.jar"/>
+            <jar href="lib/mysql-connector-java-5.1.23-bin.jar"/>
+            <jar href="lib/mysql-connector-java-5.1.18-bin.jar"/>
+            <jar href="lib/edisoncorSX.jar"/>
+            <jar href="lib/jcalendar-1.4.jar"/>
+            <jar href="lib/AbsoluteLayout.jar"/>
+            <jar href="lib/jfreechart-1.0.14.jar"/>
+            <jar href="lib/jcommon-1.0.17.jar"/>
+    </resources>
+    <application-desc main-class="aplicacionlogistica.formularios.IngresoAlSistema">
+        <!-- Application Arguments -->
+    </application-desc>
+</jnlp>

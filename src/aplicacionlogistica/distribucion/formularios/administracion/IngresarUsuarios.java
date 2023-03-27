@@ -1,0 +1,1956 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package aplicacionlogistica.distribucion.formularios.administracion;
+
+import aplicacionlogistica.distribucion.Threads.HiloGuardarUsuario;
+import aplicacionlogistica.distribucion.consultas.FBuscarEmpleados;
+import aplicacionlogistica.configuracion.Inicio;
+import aplicacionlogistica.distribucion.objetos.CEstadosCiviles;
+import aplicacionlogistica.distribucion.objetos.CNivelesDeAcceso;
+import aplicacionlogistica.distribucion.objetos.CTiposDeAcceso;
+import aplicacionlogistica.distribucion.objetos.CTiposDeSangre;
+import aplicacionlogistica.configuracion.organizacion.CAgencias;
+import aplicacionlogistica.configuracion.organizacion.CCiudades;
+import aplicacionlogistica.configuracion.organizacion.CDepartamentos;
+import aplicacionlogistica.configuracion.organizacion.CRegionales;
+import aplicacionlogistica.configuracion.organizacion.CZonas;
+import aplicacionlogistica.distribucion.objetos.personas.CUsuarios;
+import java.awt.HeadlessException;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author VLI_488
+ */
+public class IngresarUsuarios extends javax.swing.JInternalFrame {
+
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    CUsuarios user = null;
+    public CUsuarios nuevoUsuario = null;
+    boolean nuevo = false;
+    boolean actualizar = false;
+    boolean existeNombreDeUsuario = true;
+    boolean esAdministrador = false;
+    String mensaje = null;
+    String clave = null;
+    public Inicio ini;
+    public boolean estaOcupadoGrabando = false;
+
+    /**
+     * Creates new form IngresarPersonas
+     *
+     * @param ini
+     */
+    public IngresarUsuarios(Inicio ini) throws Exception {
+        initComponents();
+        this.ini = ini;
+
+        user = ini.getUser();
+        if (user.getTipoAcceso() == 0) {
+            esAdministrador = true;
+        }
+        lblCirculoDeProgreso.setVisible(false);
+        manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                //como dije, solo las notificaciones del tipo "typed" son las que actualizan los componentes
+                if (e.getID() == KeyEvent.KEY_TYPED) {
+                    // if(e.getSource() instanceof JComponent 
+                    //if(e.getKeyChar()>='0' && e.getKeyChar()<='9' ){
+                    if (e.getSource() instanceof JComponent
+                            // si el textfield esta marcado en el nombre y si el nombre es igual a "ignore_upper_case"
+                            // entonces el campo puede tomar las minusculas
+                            && ((JComponent) e.getSource()).getName() != null
+                            && ((JComponent) e.getSource()).getName().startsWith("numerico")) {
+
+                        if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9') {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    } else {
+                        if (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z') {
+                            if (e.getSource() instanceof JComponent
+                                    // si el textfield esta marcado en el nombre y si el nombre es igual a "ignore_upper_case"
+                                    // entonces el campo puede tomar las minusculas
+                                    && ((JComponent) e.getSource()).getName() != null
+                                    && ((JComponent) e.getSource()).getName().startsWith("minuscula")) {
+                                return false;
+                            } else {
+                                //como vamos a convertir todo a mayúsculas, entonces solo checamos si los caracteres son 
+                                //minusculas                          
+                                e.setKeyChar((char) (((int) e.getKeyChar()) - 32));
+                            }
+                        }
+                    }
+                }
+
+                //y listo, regresamos siempre falso para que las demas notificaciones continuen, si regresamos true
+                // significa que el dispatcher consumio el evento
+                return false;
+            }
+        });
+        // cargarLaVista();
+        new Thread(new HiloIngresarUsuarios(ini, this, "cargarLaVista")).start();
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel5 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        txtEscolaridad = new javax.swing.JTextField();
+        txtLugarDeNacimiento = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        txtUsuarioDeEntrada = new javax.swing.JTextField();
+        cbxGenero = new javax.swing.JComboBox();
+        cbxEstadoCivil = new javax.swing.JComboBox();
+        cbxTipoDeSangre = new javax.swing.JComboBox();
+        cbxZonas = new javax.swing.JComboBox();
+        cbxRegionales = new javax.swing.JComboBox();
+        cbxAgencias = new javax.swing.JComboBox();
+        dateCumpleanios = new com.toedter.calendar.JDateChooser();
+        jLabel27 = new javax.swing.JLabel();
+        txtClave1 = new javax.swing.JPasswordField();
+        txtClave2 = new javax.swing.JPasswordField();
+        jLabel23 = new javax.swing.JLabel();
+        cbxTipoDeAcceso = new javax.swing.JComboBox();
+        jLabel24 = new javax.swing.JLabel();
+        cbxNivelesDeAcceso = new javax.swing.JComboBox();
+        chkActivo = new javax.swing.JCheckBox();
+        jPanel2 = new javax.swing.JPanel();
+        btnSalir = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
+        btnGrabar = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txtCedula = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtNombres = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtApellidos = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtDireccion = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtBarrio = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        cbxDepartamentos = new javax.swing.JComboBox();
+        jLabel7 = new javax.swing.JLabel();
+        cbxCiudades = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtCelular = new javax.swing.JTextField();
+        lblCirculoDeProgreso = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jBtnNuevo = new javax.swing.JButton();
+        jBtnGrabar = new javax.swing.JToggleButton();
+        jBtnCancelar = new javax.swing.JToggleButton();
+        jBtnExit = new javax.swing.JToggleButton();
+
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Formulario para el ingreso de Usuarios del Sistema");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/turbo_64x64.png"))); // NOI18N
+
+        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        txtEscolaridad.setEditable(false);
+        txtEscolaridad.setToolTipText("Ingresar el grado de escolaridad");
+        txtEscolaridad.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtEscolaridadFocusGained(evt);
+            }
+        });
+        txtEscolaridad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEscolaridadActionPerformed(evt);
+            }
+        });
+        txtEscolaridad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtEscolaridadKeyPressed(evt);
+            }
+        });
+
+        txtLugarDeNacimiento.setEditable(false);
+        txtLugarDeNacimiento.setToolTipText("Ingresar el lugar de nacimiento");
+        txtLugarDeNacimiento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtLugarDeNacimientoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtLugarDeNacimientoFocusLost(evt);
+            }
+        });
+        txtLugarDeNacimiento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtLugarDeNacimientoKeyPressed(evt);
+            }
+        });
+
+        txtEmail.setEditable(false);
+        txtEmail.setToolTipText("Ingresar el email personal ó corporativo");
+        txtEmail.setName("minuscula"); // NOI18N
+        txtEmail.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtEmailFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtEmailFocusLost(evt);
+            }
+        });
+        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtEmailKeyPressed(evt);
+            }
+        });
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel11.setText("Escolaridad");
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel12.setText("Genero");
+
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel13.setText("Cumpleaños");
+
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel14.setText("Lugar Nacimiento");
+
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel15.setText("Estado Civil");
+
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel16.setText("Email");
+
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel17.setText("Tipo de Sangre");
+
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel20.setText("Zona");
+
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel21.setText("Regional");
+
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel22.setText("Agencia");
+
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel25.setText("usuario de entrada");
+
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel26.setText("Clave 1");
+
+        txtUsuarioDeEntrada.setEditable(false);
+        txtUsuarioDeEntrada.setToolTipText("Asignar nombre de usuario de entrada");
+        txtUsuarioDeEntrada.setName("minuscula"); // NOI18N
+        txtUsuarioDeEntrada.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtUsuarioDeEntradaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtUsuarioDeEntradaFocusLost(evt);
+            }
+        });
+        txtUsuarioDeEntrada.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUsuarioDeEntradaKeyPressed(evt);
+            }
+        });
+
+        cbxGenero.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MASCULINO", "FEMENINO" }));
+        cbxGenero.setToolTipText("Seleccionar Género");
+        cbxGenero.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxGeneroItemStateChanged(evt);
+            }
+        });
+        cbxGenero.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxGeneroKeyPressed(evt);
+            }
+        });
+
+        cbxEstadoCivil.setToolTipText("Sellecionar el estado civil actual");
+        cbxEstadoCivil.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxEstadoCivilItemStateChanged(evt);
+            }
+        });
+        cbxEstadoCivil.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxEstadoCivilFocusGained(evt);
+            }
+        });
+        cbxEstadoCivil.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxEstadoCivilKeyPressed(evt);
+            }
+        });
+
+        cbxTipoDeSangre.setToolTipText("Seleccionar el Tipo de sangre");
+        cbxTipoDeSangre.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxTipoDeSangreItemStateChanged(evt);
+            }
+        });
+        cbxTipoDeSangre.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxTipoDeSangreFocusGained(evt);
+            }
+        });
+        cbxTipoDeSangre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxTipoDeSangreKeyPressed(evt);
+            }
+        });
+
+        cbxZonas.setToolTipText("Seleccionar la zona");
+        cbxZonas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxZonasItemStateChanged(evt);
+            }
+        });
+        cbxZonas.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxZonasFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbxZonasFocusLost(evt);
+            }
+        });
+        cbxZonas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxZonasKeyPressed(evt);
+            }
+        });
+
+        cbxRegionales.setToolTipText("Seleccionar la Regional");
+        cbxRegionales.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxRegionalesItemStateChanged(evt);
+            }
+        });
+        cbxRegionales.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxRegionalesFocusGained(evt);
+            }
+        });
+        cbxRegionales.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxRegionalesKeyPressed(evt);
+            }
+        });
+
+        cbxAgencias.setToolTipText("Seleccionar la Agencia");
+        cbxAgencias.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxAgenciasItemStateChanged(evt);
+            }
+        });
+        cbxAgencias.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxAgenciasFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbxAgenciasFocusLost(evt);
+            }
+        });
+        cbxAgencias.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxAgenciasKeyPressed(evt);
+            }
+        });
+
+        dateCumpleanios.setToolTipText("Seleccionar la fecha de nacimiento");
+        dateCumpleanios.setDateFormatString("yyyy/MM/dd");
+        dateCumpleanios.setEnabled(false);
+
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel27.setText("Confirma la Clave");
+
+        txtClave1.setEditable(false);
+        txtClave1.setText("123456");
+        txtClave1.setToolTipText("Por defecto es 123456");
+        txtClave1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtClave1FocusGained(evt);
+            }
+        });
+        txtClave1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClave1KeyPressed(evt);
+            }
+        });
+
+        txtClave2.setEditable(false);
+        txtClave2.setText("123456");
+        txtClave2.setToolTipText("por defecto es 123456");
+        txtClave2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtClave2FocusGained(evt);
+            }
+        });
+        txtClave2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClave2KeyPressed(evt);
+            }
+        });
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel23.setText("Tipo de Acceso");
+
+        cbxTipoDeAcceso.setToolTipText("Seleccionar el tipo de Acceso");
+        cbxTipoDeAcceso.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxTipoDeAccesoItemStateChanged(evt);
+            }
+        });
+        cbxTipoDeAcceso.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxTipoDeAccesoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbxTipoDeAccesoFocusLost(evt);
+            }
+        });
+        cbxTipoDeAcceso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxTipoDeAccesoActionPerformed(evt);
+            }
+        });
+        cbxTipoDeAcceso.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxTipoDeAccesoKeyPressed(evt);
+            }
+        });
+
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel24.setText("Nivel de Acceso");
+
+        cbxNivelesDeAcceso.setToolTipText("Seleccionar el nivel de acceso");
+        cbxNivelesDeAcceso.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxNivelesDeAccesoItemStateChanged(evt);
+            }
+        });
+        cbxNivelesDeAcceso.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxNivelesDeAccesoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbxNivelesDeAccesoFocusLost(evt);
+            }
+        });
+        cbxNivelesDeAcceso.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxNivelesDeAccesoKeyPressed(evt);
+            }
+        });
+
+        chkActivo.setSelected(true);
+        chkActivo.setText("Activo");
+        chkActivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkActivoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtLugarDeNacimiento)
+                            .addComponent(txtEmail)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkActivo)
+                                    .addComponent(txtEscolaridad, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbxGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(dateCumpleanios, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbxEstadoCivil, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbxTipoDeSangre, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtUsuarioDeEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtClave1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtClave2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 52, Short.MAX_VALUE)))
+                        .addGap(22, 22, 22))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cbxNivelesDeAcceso, javax.swing.GroupLayout.Alignment.LEADING, 0, 240, Short.MAX_VALUE)
+                            .addComponent(cbxTipoDeAcceso, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxAgencias, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxRegionales, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxZonas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtEscolaridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(dateCumpleanios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtLugarDeNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxEstadoCivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(cbxTipoDeSangre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel20)
+                    .addComponent(cbxZonas, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxRegionales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxAgencias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(txtUsuarioDeEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtClave1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel27)
+                    .addComponent(txtClave2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxTipoDeAcceso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24)
+                    .addComponent(cbxNivelesDeAcceso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addComponent(chkActivo)
+                .addGap(0, 1, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/exit.png"))); // NOI18N
+        btnSalir.setText("Salir");
+        btnSalir.setToolTipText("Salir de ingresar empleado...");
+        btnSalir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnSalir.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/cancel-64x64.png"))); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.setToolTipText("Limpia la ventana para ingreasr registro...");
+        btnCancelar.setEnabled(false);
+        btnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancelar.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/agregar.png"))); // NOI18N
+        btnNuevo.setText("Nuevo");
+        btnNuevo.setToolTipText("Agregar ó Modificar un registro");
+        btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNuevo.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnNuevo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        btnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+
+        btnGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/grabar.png"))); // NOI18N
+        btnGrabar.setText("Grabar");
+        btnGrabar.setToolTipText("Guardar registro nuevo ó modificado");
+        btnGrabar.setEnabled(false);
+        btnGrabar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGrabar.setPreferredSize(new java.awt.Dimension(97, 97));
+        btnGrabar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGrabar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGrabarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGrabar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnGrabar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(btnNuevo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Cédula");
+
+        txtCedula.setEditable(false);
+        txtCedula.setToolTipText("Ingresar documento de identificación");
+        txtCedula.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCedulaFocusGained(evt);
+            }
+        });
+        txtCedula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCedulaActionPerformed(evt);
+            }
+        });
+        txtCedula.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCedulaKeyPressed(evt);
+            }
+        });
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Nombres");
+
+        txtNombres.setEditable(false);
+        txtNombres.setToolTipText("Ingresar Nombres completos");
+        txtNombres.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtNombresFocusGained(evt);
+            }
+        });
+        txtNombres.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNombresKeyPressed(evt);
+            }
+        });
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Apellidos");
+
+        txtApellidos.setEditable(false);
+        txtApellidos.setToolTipText("Ingresar apellidos completos");
+        txtApellidos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtApellidosFocusGained(evt);
+            }
+        });
+        txtApellidos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtApellidosKeyPressed(evt);
+            }
+        });
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("Direción");
+
+        txtDireccion.setEditable(false);
+        txtDireccion.setToolTipText("Ingresar dirección");
+        txtDireccion.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDireccionFocusGained(evt);
+            }
+        });
+        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDireccionKeyPressed(evt);
+            }
+        });
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("Barrio");
+
+        txtBarrio.setEditable(false);
+        txtBarrio.setToolTipText("Ingresar el barrio");
+        txtBarrio.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtBarrioFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtBarrioFocusLost(evt);
+            }
+        });
+        txtBarrio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBarrioActionPerformed(evt);
+            }
+        });
+        txtBarrio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBarrioKeyPressed(evt);
+            }
+        });
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("Departamento");
+
+        cbxDepartamentos.setToolTipText("Seleccionar el Departamento ó estado");
+        cbxDepartamentos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxDepartamentosItemStateChanged(evt);
+            }
+        });
+        cbxDepartamentos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxDepartamentosFocusGained(evt);
+            }
+        });
+        cbxDepartamentos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxDepartamentosKeyPressed(evt);
+            }
+        });
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setText("Ciudad");
+
+        cbxCiudades.setToolTipText("Seleccionar la ciudad");
+        cbxCiudades.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxCiudadesItemStateChanged(evt);
+            }
+        });
+        cbxCiudades.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                cbxCiudadesFocusGained(evt);
+            }
+        });
+        cbxCiudades.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbxCiudadesKeyPressed(evt);
+            }
+        });
+
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel8.setText("Teléfono");
+
+        txtTelefono.setEditable(false);
+        txtTelefono.setToolTipText("ingresar el #  de teléfono fijo");
+        txtTelefono.setName("numerico"); // NOI18N
+        txtTelefono.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtTelefonoFocusGained(evt);
+            }
+        });
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyPressed(evt);
+            }
+        });
+
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel9.setText("Celular");
+
+        txtCelular.setEditable(false);
+        txtCelular.setToolTipText("Ingreasr el # celular particular");
+        txtCelular.setName("numerico"); // NOI18N
+        txtCelular.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCelularFocusGained(evt);
+            }
+        });
+        txtCelular.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCelularActionPerformed(evt);
+            }
+        });
+        txtCelular.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCelularKeyPressed(evt);
+            }
+        });
+
+        lblCirculoDeProgreso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/circuloDeprogreso.gif"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNombres, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtApellidos, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtDireccion, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtBarrio)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(cbxDepartamentos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cbxCiudades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtCelular)
+                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(lblCirculoDeProgreso)))
+                        .addGap(106, 106, 106)))
+                .addGap(38, 38, 38))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(lblCirculoDeProgreso))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtNombres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtBarrio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel6))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(cbxDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxCiudades, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addGap(1, 1, 1))
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jToolBar1.setRollover(true);
+
+        jBtnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Create.png"))); // NOI18N
+        jBtnNuevo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnNuevo.setFocusable(false);
+        jBtnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnNuevoActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnNuevo);
+
+        jBtnGrabar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Save.png"))); // NOI18N
+        jBtnGrabar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnGrabar.setEnabled(false);
+        jBtnGrabar.setFocusable(false);
+        jBtnGrabar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnGrabar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnGrabar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnGrabarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnGrabar);
+
+        jBtnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Cancel.png"))); // NOI18N
+        jBtnCancelar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnCancelar.setFocusable(false);
+        jBtnCancelar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnCancelar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnCancelarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnCancelar);
+
+        jBtnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/img16x16/Exit.png"))); // NOI18N
+        jBtnExit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jBtnExit.setFocusable(false);
+        jBtnExit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBtnExit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jBtnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnExitActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jBtnExit);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        salir();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void salir() {
+        this.dispose();
+        this.setVisible(false);
+    }
+
+    private void txtCedulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCedulaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCedulaActionPerformed
+
+    private void txtCelularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCelularActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCelularActionPerformed
+
+    private void txtNombresKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombresKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtApellidos.requestFocus();
+        }
+    }//GEN-LAST:event_txtNombresKeyPressed
+
+    private void txtApellidosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtDireccion.requestFocus();
+        }
+    }//GEN-LAST:event_txtApellidosKeyPressed
+
+    private void txtDireccionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtBarrio.requestFocus();
+        }
+    }//GEN-LAST:event_txtDireccionKeyPressed
+
+    private void txtBarrioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarrioKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cbxDepartamentos.requestFocus();
+
+        }
+    }//GEN-LAST:event_txtBarrioKeyPressed
+
+    private void cbxDepartamentosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxDepartamentosItemStateChanged
+
+        for (CDepartamentos dpto : ini.getListaDeDepartamentos()) {
+            if (cbxDepartamentos.getSelectedItem() != null) {
+                if (cbxDepartamentos.getSelectedItem().toString().equals(dpto.getNombreDepartamento())) {
+
+                    cbxCiudades.removeAllItems();
+                    for (CCiudades ciudad : dpto.getListaDeCiudades()) {
+                        if (ciudad.getIdDepartamento() == dpto.getIdDepartamento()) {
+                            cbxCiudades.addItem(ciudad.getNombreCiudad());
+                        }
+                    }
+                }
+            }
+        }
+
+    }//GEN-LAST:event_cbxDepartamentosItemStateChanged
+
+    private void cbxCiudadesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxCiudadesItemStateChanged
+        //txtTelefono.requestFocus();       // TODO add your handling code here:
+    }//GEN-LAST:event_cbxCiudadesItemStateChanged
+
+    private void txtTelefonoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtCelular.requestFocus();
+        }
+    }//GEN-LAST:event_txtTelefonoKeyPressed
+
+    private void txtCelularKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCelularKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtEscolaridad.requestFocus();
+        }
+    }//GEN-LAST:event_txtCelularKeyPressed
+
+    private void cbxRegionalesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxRegionalesItemStateChanged
+        try {
+            if (nuevo) {
+                CRegionales regional = new CRegionales(ini);
+
+                if (ini.getListaDeRegionales() != null) {
+                    for (CRegionales obj : ini.getListaDeRegionales()) {
+                        if (obj.getNombreRegional().equals(cbxRegionales.getSelectedItem().toString())) {
+                            regional = obj;
+                        }
+                    }
+                    cbxAgencias.removeAllItems();
+                    for (CAgencias obj : ini.getListaDeAgencias()) {
+                        if (obj.getIdRegional() == regional.getIdRegional()) {
+                            cbxAgencias.addItem(obj.getNombreAgencia());
+                        }
+                    }
+
+                }
+
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(IngresarUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en cbxRegionalesItemStateChanged " + ex.getMessage());
+        }
+    }//GEN-LAST:event_cbxRegionalesItemStateChanged
+
+    private void cbxZonasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxZonasItemStateChanged
+        try {
+            if (nuevo) {
+                CZonas zona = new CZonas(ini);
+
+                if (ini.getListaDeZonas() != null) {
+                    for (CZonas obj : ini.getListaDeZonas()) {
+                        String a = cbxZonas.getSelectedItem().toString();
+                        if (obj.getNombreZona().equals(cbxZonas.getSelectedItem().toString())) {
+                            zona = obj;
+                            break;
+                        }
+                    }
+                    cbxRegionales.removeAllItems();
+                    for (CRegionales obj : ini.getListaDeRegionales()) {
+                        if (obj.getIdRegional() == zona.getIdZona()) {
+                            cbxRegionales.addItem(obj.getNombreRegional());
+                        }
+                    }
+
+                }
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(IngresarUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en cbxZonasItemStateChanged " + ex.getMessage());
+        }
+    }//GEN-LAST:event_cbxZonasItemStateChanged
+
+    private void cbxAgenciasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxAgenciasItemStateChanged
+        //cbxCentrosDeCosto.requestFocus();
+    }//GEN-LAST:event_cbxAgenciasItemStateChanged
+
+    private void txtUsuarioDeEntradaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioDeEntradaKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+//            try {
+//                llenarTiposDeAcceso();
+//            } catch (Exception ex) {
+//                Logger.getLogger(IngresarUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+//                 System.out.println("Error en txtUsuarioDeEntradaKeyPressed " + ex.getMessage().toString());
+//            }
+        }
+    }//GEN-LAST:event_txtUsuarioDeEntradaKeyPressed
+
+    private void txtCedulaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCedulaKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_F2) {
+            FBuscarEmpleados form = new FBuscarEmpleados(this);
+            this.getParent().add(form);
+            form.toFront();
+            form.setClosable(true);
+            form.setVisible(true);
+            form.setTitle("Formulario para buscar usuarios por apellidos");
+        }
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // consultarUsuario();
+            new Thread(new HiloIngresarUsuarios(ini, this, "consultarUsuario")).start();
+
+        }
+    }//GEN-LAST:event_txtCedulaKeyPressed
+
+    private void cbxDepartamentosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxDepartamentosFocusGained
+
+    }//GEN-LAST:event_cbxDepartamentosFocusGained
+
+    private void txtBarrioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBarrioFocusLost
+
+    }//GEN-LAST:event_txtBarrioFocusLost
+
+    private void cbxCiudadesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxCiudadesFocusGained
+
+    }//GEN-LAST:event_cbxCiudadesFocusGained
+
+    private void cbxZonasFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxZonasFocusGained
+
+    }//GEN-LAST:event_cbxZonasFocusGained
+
+    private void cbxRegionalesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxRegionalesFocusGained
+
+    }//GEN-LAST:event_cbxRegionalesFocusGained
+
+    private void cbxAgenciasFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxAgenciasFocusGained
+
+    }//GEN-LAST:event_cbxAgenciasFocusGained
+
+    private void cbxZonasFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxZonasFocusLost
+    }//GEN-LAST:event_cbxZonasFocusLost
+
+    private void cbxAgenciasFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxAgenciasFocusLost
+
+    }//GEN-LAST:event_cbxAgenciasFocusLost
+
+    private void txtUsuarioDeEntradaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioDeEntradaFocusLost
+
+    }//GEN-LAST:event_txtUsuarioDeEntradaFocusLost
+
+    private void txtCedulaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCedulaFocusGained
+        txtCedula.setSelectionStart(0);
+        txtCedula.setSelectionEnd(txtCedula.getText().length());
+    }//GEN-LAST:event_txtCedulaFocusGained
+
+    private void txtNombresFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNombresFocusGained
+        txtNombres.setSelectionStart(0);
+        txtNombres.setSelectionEnd(txtNombres.getText().length());
+    }//GEN-LAST:event_txtNombresFocusGained
+
+    private void txtApellidosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtApellidosFocusGained
+        txtApellidos.setSelectionStart(0);
+        txtApellidos.setSelectionEnd(txtApellidos.getText().length());
+    }//GEN-LAST:event_txtApellidosFocusGained
+
+    private void txtDireccionFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDireccionFocusGained
+        txtDireccion.setSelectionStart(0);
+        txtDireccion.setSelectionEnd(txtDireccion.getText().length());
+    }//GEN-LAST:event_txtDireccionFocusGained
+
+    private void txtBarrioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBarrioFocusGained
+        txtBarrio.setSelectionStart(0);
+        txtBarrio.setSelectionEnd(txtBarrio.getText().length());
+    }//GEN-LAST:event_txtBarrioFocusGained
+
+    private void txtTelefonoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoFocusGained
+        txtTelefono.setSelectionStart(0);
+        txtTelefono.setSelectionEnd(txtTelefono.getText().length());
+    }//GEN-LAST:event_txtTelefonoFocusGained
+
+    private void txtCelularFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCelularFocusGained
+        txtCelular.setSelectionStart(0);
+        txtCelular.setSelectionEnd(txtCelular.getText().length());
+    }//GEN-LAST:event_txtCelularFocusGained
+
+    private void txtUsuarioDeEntradaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUsuarioDeEntradaFocusGained
+        txtUsuarioDeEntrada.setSelectionStart(0);
+        txtUsuarioDeEntrada.setSelectionEnd(txtUsuarioDeEntrada.getText().length());
+    }//GEN-LAST:event_txtUsuarioDeEntradaFocusGained
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+
+        nuevo();
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void nuevo() {
+        if (actualizar) {
+            btnGrabar.setEnabled(true);
+            jBtnGrabar.setEnabled(true);
+            btnNuevo.setEnabled(false);
+            jBtnNuevo.setEnabled(false);
+
+            habilitar(true);
+            txtCedula.setEditable(false);
+            txtUsuarioDeEntrada.setEnabled(false);
+            txtClave1.setEnabled(true);
+            txtClave2.setEnabled(true);
+            txtClave1.setEditable(true);
+            txtClave2.setEditable(true);
+
+        } else {
+            limpiar();
+            nuevo = true;
+            txtCedula.setEditable(true);
+            txtCedula.setEnabled(true);
+
+        }
+
+        btnNuevo.setEnabled(false);
+        jBtnNuevo.setEnabled(false);
+        txtCedula.requestFocus();
+    }
+
+    private void btnGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarActionPerformed
+        grabar();
+
+    }//GEN-LAST:event_btnGrabarActionPerformed
+
+    private void grabar() throws HeadlessException {
+        if (!txtCedula.getText().isEmpty()) {
+            int x = JOptionPane.showConfirmDialog(this, "Desea guardar el registro ?", "Guardar registro", JOptionPane.OK_CANCEL_OPTION);
+
+            if (x == JOptionPane.OK_OPTION) {
+
+                btnGrabar.setEnabled(false);
+                if (validar()) {
+                    btnGrabar.setEnabled(false);
+
+                    new Thread(new HiloGuardarUsuario(ini, this)).start(); //ok
+
+                } else { // Erro de validacion de datos en el formulario
+                    btnGrabar.setEnabled(true);
+                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error al guardar", 0);
+                }
+            }
+        } else {
+            JOptionPane.showInternalMessageDialog(this, "No se pueden Guardar Datos con campos vacíos", "Error al guardar", 2);
+        }
+    }
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void cancelar() {
+        limpiar();
+        nuevoUsuario = null;
+        habilitar(false);
+        nuevo = false;
+        actualizar = false;
+        btnNuevo.setEnabled(true);
+        jBtnNuevo.setEnabled(true);
+
+        btnGrabar.setEnabled(false);
+        jBtnGrabar.setEnabled(false);
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/agregar.png"))); //
+    }
+
+    private void cbxDepartamentosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxDepartamentosKeyPressed
+
+    }//GEN-LAST:event_cbxDepartamentosKeyPressed
+
+    private void cbxCiudadesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxCiudadesKeyPressed
+
+    }//GEN-LAST:event_cbxCiudadesKeyPressed
+
+    private void cbxZonasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxZonasKeyPressed
+
+    }//GEN-LAST:event_cbxZonasKeyPressed
+
+    private void cbxRegionalesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxRegionalesKeyPressed
+
+    }//GEN-LAST:event_cbxRegionalesKeyPressed
+
+    private void cbxAgenciasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxAgenciasKeyPressed
+
+    }//GEN-LAST:event_cbxAgenciasKeyPressed
+
+    private void txtEscolaridadKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEscolaridadKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cbxGenero.requestFocus();
+        }
+    }//GEN-LAST:event_txtEscolaridadKeyPressed
+
+    private void txtEscolaridadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEscolaridadFocusGained
+        txtEscolaridad.setSelectionStart(0);
+        txtEscolaridad.setSelectionEnd(txtEscolaridad.getText().length());
+    }//GEN-LAST:event_txtEscolaridadFocusGained
+
+    private void txtEscolaridadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEscolaridadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEscolaridadActionPerformed
+
+    private void cbxGeneroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxGeneroKeyPressed
+
+    }//GEN-LAST:event_cbxGeneroKeyPressed
+
+    private void cbxGeneroItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxGeneroItemStateChanged
+        dateCumpleanios.requestFocus();        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxGeneroItemStateChanged
+
+    private void txtLugarDeNacimientoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLugarDeNacimientoKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            cbxEstadoCivil.requestFocus();
+        }
+    }//GEN-LAST:event_txtLugarDeNacimientoKeyPressed
+
+    private void txtLugarDeNacimientoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtLugarDeNacimientoFocusLost
+
+    }//GEN-LAST:event_txtLugarDeNacimientoFocusLost
+
+    private void txtLugarDeNacimientoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtLugarDeNacimientoFocusGained
+        txtLugarDeNacimiento.setSelectionStart(0);
+        txtLugarDeNacimiento.setSelectionEnd(txtLugarDeNacimiento.getText().length());
+    }//GEN-LAST:event_txtLugarDeNacimientoFocusGained
+
+    private void cbxEstadoCivilKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxEstadoCivilKeyPressed
+
+    }//GEN-LAST:event_cbxEstadoCivilKeyPressed
+
+    private void cbxEstadoCivilFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxEstadoCivilFocusGained
+
+    }//GEN-LAST:event_cbxEstadoCivilFocusGained
+
+    private void cbxEstadoCivilItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEstadoCivilItemStateChanged
+        // txtEmail.requestFocus();
+    }//GEN-LAST:event_cbxEstadoCivilItemStateChanged
+
+    private void txtEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+           if( validarUsuario()){
+                cbxTipoDeSangre.requestFocus();
+           }
+        }
+    }//GEN-LAST:event_txtEmailKeyPressed
+
+    private void txtEmailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusLost
+
+    }//GEN-LAST:event_txtEmailFocusLost
+
+    private void txtEmailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusGained
+        txtEmail.setSelectionStart(0);
+        txtEmail.setSelectionEnd(txtEmail.getText().length());
+    }//GEN-LAST:event_txtEmailFocusGained
+
+    private void cbxTipoDeSangreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxTipoDeSangreKeyPressed
+
+    }//GEN-LAST:event_cbxTipoDeSangreKeyPressed
+
+    private void cbxTipoDeSangreFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxTipoDeSangreFocusGained
+
+    }//GEN-LAST:event_cbxTipoDeSangreFocusGained
+
+    private void cbxTipoDeSangreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTipoDeSangreItemStateChanged
+
+    }//GEN-LAST:event_cbxTipoDeSangreItemStateChanged
+
+    private void cbxTipoDeAccesoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTipoDeAccesoItemStateChanged
+
+        if (nuevo) {
+            btnGrabar.setEnabled(true);
+        }
+    }//GEN-LAST:event_cbxTipoDeAccesoItemStateChanged
+
+    private void cbxTipoDeAccesoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxTipoDeAccesoFocusGained
+
+    }//GEN-LAST:event_cbxTipoDeAccesoFocusGained
+
+    private void cbxTipoDeAccesoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxTipoDeAccesoFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxTipoDeAccesoFocusLost
+
+    private void cbxTipoDeAccesoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxTipoDeAccesoKeyPressed
+
+    }//GEN-LAST:event_cbxTipoDeAccesoKeyPressed
+
+    private void cbxNivelesDeAccesoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxNivelesDeAccesoItemStateChanged
+        if (nuevo) {
+            btnGrabar.setEnabled(true);
+        }
+    }//GEN-LAST:event_cbxNivelesDeAccesoItemStateChanged
+
+    private void cbxNivelesDeAccesoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxNivelesDeAccesoFocusGained
+
+    }//GEN-LAST:event_cbxNivelesDeAccesoFocusGained
+
+    private void cbxNivelesDeAccesoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbxNivelesDeAccesoFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxNivelesDeAccesoFocusLost
+
+    private void cbxNivelesDeAccesoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbxNivelesDeAccesoKeyPressed
+
+    }//GEN-LAST:event_cbxNivelesDeAccesoKeyPressed
+
+    private void cbxTipoDeAccesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipoDeAccesoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxTipoDeAccesoActionPerformed
+
+    private void chkActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkActivoActionPerformed
+        if (chkActivo.isSelected()) {
+            chkActivo.setText("Activo");
+        } else {
+            chkActivo.setText("No Activo");
+        }
+    }//GEN-LAST:event_chkActivoActionPerformed
+
+    private void txtClave2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClave2KeyPressed
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+        }
+
+    }//GEN-LAST:event_txtClave2KeyPressed
+
+    private void txtClave1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClave1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtClave2.requestFocus();
+        }
+
+    }//GEN-LAST:event_txtClave1KeyPressed
+
+    private void txtClave1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClave1FocusGained
+        txtClave1.setSelectionStart(0);
+        txtClave1.setSelectionEnd(Arrays.toString(txtClave1.getPassword()).length());
+
+    }//GEN-LAST:event_txtClave1FocusGained
+
+    private void txtClave2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClave2FocusGained
+        txtClave2.setSelectionStart(0);
+        txtClave2.setSelectionEnd(Arrays.toString(txtClave2.getPassword()).length());
+    }//GEN-LAST:event_txtClave2FocusGained
+
+    private void jBtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNuevoActionPerformed
+        nuevo();
+    }//GEN-LAST:event_jBtnNuevoActionPerformed
+
+    private void jBtnGrabarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGrabarActionPerformed
+        grabar();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnGrabarActionPerformed
+
+    private void jBtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCancelarActionPerformed
+        cancelar();
+    }//GEN-LAST:event_jBtnCancelarActionPerformed
+
+    private void jBtnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnExitActionPerformed
+        salir();
+    }//GEN-LAST:event_jBtnExitActionPerformed
+
+    private void txtBarrioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBarrioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBarrioActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnCancelar;
+    public javax.swing.JButton btnGrabar;
+    public javax.swing.JButton btnNuevo;
+    private javax.swing.JButton btnSalir;
+    public javax.swing.JComboBox cbxAgencias;
+    public javax.swing.JComboBox cbxCiudades;
+    public javax.swing.JComboBox cbxDepartamentos;
+    public javax.swing.JComboBox cbxEstadoCivil;
+    public javax.swing.JComboBox cbxGenero;
+    public javax.swing.JComboBox cbxNivelesDeAcceso;
+    public javax.swing.JComboBox cbxRegionales;
+    public javax.swing.JComboBox cbxTipoDeAcceso;
+    public javax.swing.JComboBox cbxTipoDeSangre;
+    public javax.swing.JComboBox cbxZonas;
+    public javax.swing.JCheckBox chkActivo;
+    public com.toedter.calendar.JDateChooser dateCumpleanios;
+    public javax.swing.JToggleButton jBtnCancelar;
+    private javax.swing.JToggleButton jBtnExit;
+    public javax.swing.JToggleButton jBtnGrabar;
+    public javax.swing.JButton jBtnNuevo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JToolBar jToolBar1;
+    public javax.swing.JLabel lblCirculoDeProgreso;
+    public javax.swing.JTextField txtApellidos;
+    public javax.swing.JTextField txtBarrio;
+    public javax.swing.JTextField txtCedula;
+    public javax.swing.JTextField txtCelular;
+    private javax.swing.JPasswordField txtClave1;
+    private javax.swing.JPasswordField txtClave2;
+    public javax.swing.JTextField txtDireccion;
+    public javax.swing.JTextField txtEmail;
+    public javax.swing.JTextField txtEscolaridad;
+    public javax.swing.JTextField txtLugarDeNacimiento;
+    public javax.swing.JTextField txtNombres;
+    public javax.swing.JTextField txtTelefono;
+    public javax.swing.JTextField txtUsuarioDeEntrada;
+    // End of variables declaration//GEN-END:variables
+
+    public void habilitar(boolean valor) {
+
+        try {
+            txtCedula.setEditable(valor);
+            txtNombres.setEditable(valor);
+            txtApellidos.setEditable(valor);
+            txtDireccion.setEditable(valor);
+            txtBarrio.setEditable(valor);
+            txtTelefono.setEditable(valor);
+            txtCelular.setEditable(valor);
+            txtEscolaridad.setEditable(valor);
+            txtLugarDeNacimiento.setEditable(valor);
+
+            txtUsuarioDeEntrada.setEditable(valor);
+
+            txtEmail.setEditable(valor);
+            cbxGenero.setEnabled(valor);
+            cbxDepartamentos.setEnabled(valor);
+            cbxCiudades.setEnabled(valor);
+            cbxEstadoCivil.setEnabled(valor);
+            cbxTipoDeSangre.setEnabled(valor);
+            cbxZonas.setEnabled(valor);
+            cbxRegionales.setEnabled(valor);
+            cbxAgencias.setEnabled(valor);
+            dateCumpleanios.setEnabled(valor);
+
+        } catch (Exception ex) {
+        }
+
+    }
+
+    public boolean validar() {
+        boolean verificado = true;
+        mensaje = "";
+        if (txtNombres.getText().isEmpty()) {
+            mensaje += "No ha colocado el nombre del empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtApellidos.getText().isEmpty()) {
+            mensaje += "No ha colocado los apellidos del empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtDireccion.getText().isEmpty()) {
+            mensaje += "No ha colocado la dirección del empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtBarrio.getText().isEmpty()) {
+            mensaje += "No ha colocado el barrio donde vive el empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (cbxDepartamentos.getSelectedIndex() == -1) {
+            mensaje += "No ha selecccionado el departamento donde vive el empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (cbxCiudades.getSelectedIndex() == -1) {
+            mensaje += "No ha seleccionado la ciudad donde vive el empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtTelefono.getText().isEmpty()) {
+            mensaje += "No ha ingresado el telefono del empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtCelular.getText().isEmpty()) {
+            mensaje += "No ha ingresado el celular del empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (txtEscolaridad.getText().isEmpty()) {
+            mensaje += "No ha ingresado el nivel educativo del empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (txtLugarDeNacimiento.getText().isEmpty()) {
+            mensaje += "No ha ingresado el Lugar de Nacimiento del empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (cbxEstadoCivil.getSelectedIndex() == -1) {
+            mensaje += "No ha seleccionado el estado civil del empleado" + "  \n";
+            verificado = false;
+        }
+        if (txtEmail.getText().isEmpty()) {
+            mensaje += "No ha ingresado el Email del empleado" + "  \n";
+            verificado = false;
+        }
+        if (!Inicio.validateEmail(txtEmail.getText())) {
+            mensaje += "El formato del email no es válido" + "  \n";
+            verificado = false;
+
+        }
+
+        if (cbxTipoDeSangre.getSelectedIndex() == -1) {
+            mensaje += "No ha selecccionado el tipo de sangre del empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (cbxZonas.getSelectedIndex() == -1) {
+            mensaje += "No ha seleccionado la zona de ubicación del empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (cbxRegionales.getSelectedIndex() == -1) {
+            mensaje += "No ha seleccionado la regional donde está ubicado el empleado" + "  \n";
+            verificado = false;
+        }
+        if (cbxAgencias.getSelectedIndex() == -1) {
+            mensaje += "No ha selecccionado la agencia donde está ubicado el empleado" + "  \n";
+            verificado = false;
+        }
+
+        if (txtUsuarioDeEntrada.getText().isEmpty()) {
+            mensaje += "No ha asignado el usuario de entrada" + "  \n";
+            verificado = false;
+        }
+        if (!actualizar) {
+            if (existeNombreDeUsuario = user.verificarUsuario(txtUsuarioDeEntrada.getText().trim())) {
+                mensaje += "Nombre de usuario ya utilizado en la Base de Datos" + "  \n";
+                verificado = false;
+            }
+            clave = compararClaves();
+            if (clave == null) {
+                mensaje += "Las claves son diferentes ó están vacías " + "  \n";
+                verificado = false;
+            }
+
+        }
+
+        return verificado;
+    }
+
+    public boolean guardarRegistroNuevoUsuario() {
+        boolean guardado = false;
+        try {
+            asignarPrpiedadesUsuario();
+            if (actualizar) {
+                guardado = nuevoUsuario.actualizarUsuario();
+
+            } else {
+                guardado = nuevoUsuario.grabarUsuario();
+
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(IngresarUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en guardarRegistroNuevoUsuario " + ex.getMessage());
+        }
+        return guardado;
+    }
+
+    public void asignarPrpiedadesUsuario() throws Exception {
+        nuevoUsuario = new CUsuarios(ini);
+        nuevoUsuario.setCedula(txtCedula.getText().trim());
+        nuevoUsuario.setNombres(txtNombres.getText().trim());
+        nuevoUsuario.setApellidos(txtApellidos.getText().trim());
+        nuevoUsuario.setDireccion(txtDireccion.getText().trim());
+        nuevoUsuario.setBarrio(txtBarrio.getText().trim());
+        nuevoUsuario.setTelefonoFijo(txtTelefono.getText().trim());
+        nuevoUsuario.setTelefonoCelular(txtCelular.getText().trim());
+        nuevoUsuario.setEscolaridad(txtEscolaridad.getText().trim());
+        nuevoUsuario.setLugarNacimiento(txtLugarDeNacimiento.getText().trim());
+        nuevoUsuario.setEmail(txtEmail.getText().trim());
+        nuevoUsuario.setNombreUsuario(txtUsuarioDeEntrada.getText().trim());
+        nuevoUsuario.setClaveUsuario(clave);
+        //existeNombreDeUsuario=user.verificarUsuario(txtUsuarioDeEntrada.getText().trim());
+        nuevoUsuario.setGenero(cbxGenero.getSelectedItem().toString());
+
+        cbxDepartamentos.getSelectedItem().toString();
+        for (CCiudades obj : ini.getListaDeCiudades()) {
+            if (obj.getNombreCiudad().equals(cbxCiudades.getSelectedItem().toString())) {
+                nuevoUsuario.setCiudad(obj.getIdCiudad());
+            }
+        }
+
+        for (CEstadosCiviles obj : ini.getListaDeEstadosCiviles()) {
+            if (obj.getNombreEstadoCivil().equals(cbxEstadoCivil.getSelectedItem().toString())) {
+                nuevoUsuario.setIdEstadoCivil(obj.getIdEstadoCivil());
+            }
+        }
+        for (CTiposDeSangre obj : ini.getListaDeTiposDeSangre()) {
+            if (obj.getNombreTipoDeSAngre().equals(cbxTipoDeSangre.getSelectedItem().toString())) {
+                nuevoUsuario.setIdTipoSangre(obj.getIdTipoDeSAngre());
+            }
+        }
+        // nuevoUsuario.setIdTipoSangre(new CTiposDeSangre(ini, cbxTipoDeSangre.getSelectedItem().toString()));
+        //cbxZonas.getSelectedItem().toString();
+        //cbxRegionales.getSelectedItem().toString();
+        for (CAgencias ag : ini.getListaDeAgencias()) {
+            if (ag.getNombreAgencia().equals(cbxAgencias.getSelectedItem().toString())) {
+                nuevoUsuario.setAgencia(ag.getIdAgencia());
+                nuevoUsuario.setRegional(ag.getIdRegional());
+                nuevoUsuario.setZona(ag.getIdZona());
+            }
+        }
+
+        for (CTiposDeAcceso obj : ini.getListaDeTiposDeAcceso()) {
+            if (obj.getNombreTipoDeAcceso().equals(cbxTipoDeAcceso.getSelectedItem().toString())) {
+                nuevoUsuario.setTipoAcceso(obj.getIdTipoDeAcceso());
+            }
+        }
+
+        for (CNivelesDeAcceso obj : ini.getListaDeNivelesDeAcceso()) {
+            if (obj.getNombreNivelDeAcceso().equals(cbxNivelesDeAcceso.getSelectedItem().toString())) {
+                nuevoUsuario.setNivelAcceso(obj.getIdNivelDeAcceso());
+            }
+        }
+        if (chkActivo.isSelected()) {
+            nuevoUsuario.setActivoUsuario(1);
+            nuevoUsuario.setActivoPersona(1);
+        } else {
+            nuevoUsuario.setActivoUsuario(0);
+            nuevoUsuario.setActivoPersona(0);
+        }
+
+        nuevoUsuario.setActivoUsuario(1);
+        Date dt = new Date();
+        dt = ini.getFechaSql(dateCumpleanios);
+        nuevoUsuario.setCumpleanios(dt);
+    }
+
+    private void limpiar() {
+
+        try {
+            txtCedula.setText("");
+            txtNombres.setText("");
+            txtApellidos.setText("");
+            txtDireccion.setText("");
+            txtBarrio.setText("");
+            txtTelefono.setText("");
+            txtCelular.setText("");
+            txtEscolaridad.setText("");
+            txtLugarDeNacimiento.setText("");
+            txtUsuarioDeEntrada.setText("");
+            txtEmail.setText("");
+
+            dateCumpleanios.setDate(new Date());
+
+            btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/aplicacionlogistica/configuracion/imagenes/agregar.png"))); //
+            btnNuevo.setText("Nuevo");
+            btnNuevo.setEnabled(true);
+            jBtnNuevo.setEnabled(true);
+
+            actualizar = false;
+
+        } catch (Exception ex) {
+        }
+
+    }
+
+    private String compararClaves() throws HeadlessException {
+        String clave = null;
+        char passArray1[] = txtClave1.getPassword();
+        for (int i = 0; i < passArray1.length; i++) {
+            char c = passArray1[i];
+            // if (!Character.isLetterOrDigit(c)) return false;
+        }
+
+        String pass1 = new String(passArray1);
+
+        char passArray2[] = txtClave2.getPassword();
+        for (int i = 0; i < passArray2.length; i++) {
+            char c = passArray2[i];
+            // if (!Character.isLetterOrDigit(c)) return false;
+        }
+
+        String pass2 = new String(passArray2);
+
+        if (pass1.equals(pass2)) {
+            clave = pass1;
+        } else {
+            JOptionPane.showMessageDialog(null, "La clave1 y la clave2 son diferentes, no coinciden..", "Error en las claves digitadas", 1);
+        }
+        return clave;
+    }
+
+    private void llenarListasDesplegables() {
+        cbxAgencias.removeAllItems();
+        cbxCiudades.removeAllItems();
+        cbxDepartamentos.removeAllItems();
+        cbxEstadoCivil.removeAllItems();
+        cbxGenero.removeAllItems();
+        cbxNivelesDeAcceso.removeAllItems();
+        cbxRegionales.removeAllItems();
+        cbxTipoDeAcceso.removeAllItems();
+        cbxTipoDeSangre.removeAllItems();
+        cbxZonas.removeAllItems();
+        for (CDepartamentos obj : ini.getListaDeDepartamentos()) {
+            cbxDepartamentos.addItem(obj.getNombreDepartamento());
+        }
+        for (CTiposDeAcceso obj : ini.getListaDeTiposDeAcceso()) {
+            cbxTipoDeAcceso.addItem(obj.getNombreTipoDeAcceso());
+        }
+        for (CNivelesDeAcceso obj : ini.getListaDeNivelesDeAcceso()) {
+            cbxNivelesDeAcceso.addItem(obj.getNombreNivelDeAcceso());
+        }
+        for (CTiposDeSangre obj : ini.getListaDeTiposDeSangre()) {
+            cbxTipoDeSangre.addItem(obj.getNombreTipoDeSAngre());
+        }
+        for (CEstadosCiviles obj : ini.getListaDeEstadosCiviles()) {
+            cbxEstadoCivil.addItem(obj.getNombreEstadoCivil());
+        }
+        for (CZonas obj : ini.getListaDeZonas()) {
+            cbxZonas.addItem(obj.getNombreZona());
+        }
+        for (CRegionales obj : ini.getListaDeRegionales()) {
+            cbxRegionales.addItem(obj.getNombreRegional());
+        }
+        for (CAgencias obj : ini.getListaDeAgencias()) {
+            cbxAgencias.addItem(obj.getNombreAgencia());
+        }
+        cbxGenero.addItem("MASCULINO");
+        cbxGenero.addItem("FEMENINO");
+    }
+
+    public boolean validarUsuario() {
+        boolean encontrado = false;
+        String strMain = txtEmail.getText().trim();
+        String[] arrSplit = strMain.split("@");
+
+        for (CUsuarios usu : ini.getListaDeUsuarios()) {
+            try {
+                if (Inicio.deCifrar(usu.getNombreUsuario()).equals(arrSplit[0])) {
+                    encontrado = true;
+                    JOptionPane.showMessageDialog(null, "El nombre de usuario ya existe en el sistema", "Ya existe", JOptionPane.ERROR_MESSAGE);
+                    txtUsuarioDeEntrada.setText("");
+                    txtEmail.requestFocus();
+                  
+                    break;
+
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(HiloIngresarUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (!encontrado) {
+            txtUsuarioDeEntrada.setText(arrSplit[0]);
+            encontrado=true;
+        }
+       return encontrado;
+    }
+}
